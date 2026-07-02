@@ -2,11 +2,11 @@
   --bg: #11121a;
   --panel: rgba(255,255,255,0.08);
   --panel-strong: rgba(255,255,255,0.13);
-  --text: #f7f3ff;
-  --muted: #beb7ca;
+  --text: #f8fafc;
+  --muted: #cbd5e1;
   --line: rgba(255,255,255,0.12);
-  --accent: #ff9fc7;
-  --accent-2: #b9a5ff;
+  --accent: #22c55e;
+  --accent-2: #3b82f6;
   --good: #a7f3d0;
   --danger: #ff8b8b;
   --shadow: 0 20px 60px rgba(0,0,0,0.35);
