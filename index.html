@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#171821" />
+  <meta name="description" content="Милое веб-приложение для подъёмов Димы: календарь событий, время пробуждения и утренний режим от Риты." />
+  <title>Вставай, Дима</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">личный утренний помощник</p>
+        <h1>Вставай, Дима</h1>
+      </div>
+      <button class="icon-button" id="settingsBtn" aria-label="Настройки">⚙️</button>
+    </header>
+
+    <main>
+      <section class="hero-card" id="morningCard">
+        <div class="hero-glow"></div>
+        <p class="today-label" id="todayLabel"></p>
+        <h2 id="heroTitle">Доброе утро, Дима</h2>
+        <p id="heroText">Рита рядом. Осталось только открыть глаза и не лечь обратно.</p>
+        <div class="hero-actions">
+          <button class="primary" id="awakeBtn">Я проснулся</button>
+          <button class="secondary" id="fiveMinBtn">Ещё 5 минут</button>
+          <button class="secondary" id="hardBtn">Мне тяжело</button>
+        </div>
+        <div class="contact-row">
+          <a class="contact-pill" id="callRitaLink" href="#">📞 Позвонить Рите</a>
+          <a class="contact-pill" id="writeRitaLink" href="#">💬 Написать</a>
+        </div>
+      </section>
+
+      <section class="next-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">ближайший подъём</p>
+            <h2 id="nextWakeTitle">Пока нет событий</h2>
+          </div>
+          <button class="tiny" id="markDoneBtn">готово</button>
+        </div>
+        <p id="nextWakeDetails">Добавь событие в календарь, и здесь появится время, когда нужно встать.</p>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span id="streakCount">0</span>
+            <p>дней подряд</p>
+          </div>
+          <div class="stat-box">
+            <span id="wakeCount">0</span>
+            <p>подъёмов отмечено</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="calendar-card">
+        <div class="calendar-head">
+          <button class="icon-button" id="prevMonth" aria-label="Предыдущий месяц">‹</button>
+          <h2 id="monthTitle">Месяц</h2>
+          <button class="icon-button" id="nextMonth" aria-label="Следующий месяц">›</button>
+        </div>
+        <div class="weekday-grid">
+          <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+        </div>
+        <div class="calendar-grid" id="calendarGrid"></div>
+      </section>
+
+      <section class="events-card">
+        <div class="section-title-row">
+          <div>
+            <p class="eyebrow">расписание</p>
+            <h2 id="selectedDateTitle">Сегодня</h2>
+          </div>
+          <button class="primary small" id="addEventBtn">+ событие</button>
+        </div>
+        <div id="eventsList" class="events-list"></div>
+      </section>
+
+      <section class="notes-card">
+        <p class="eyebrow">мини-план, если просыпаться тяжело</p>
+        <ol>
+          <li>Сесть на кровати. Не вставать сразу — просто сесть.</li>
+          <li>Поставить ноги на пол и выпить воды.</li>
+          <li>Ответить Рите: “я жив”.</li>
+          <li>Умыться и не возвращаться под одеяло.</li>
+        </ol>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-scroll="morningCard">утро</button>
+      <button class="nav-btn" data-scroll="calendar-card">календарь</button>
+      <button class="nav-btn" data-scroll="events-card">события</button>
+    </nav>
+  </div>
+
+  <dialog id="eventDialog">
+    <form method="dialog" class="dialog-card" id="eventForm">
+      <div class="dialog-head">
+        <h2 id="dialogTitle">Новое событие</h2>
+        <button class="icon-button" type="button" id="closeDialog">×</button>
+      </div>
+      <input type="hidden" id="eventId" />
+
+      <label>
+        Что за событие
+        <input id="eventTitle" placeholder="Пары, работа, встреча..." required />
+      </label>
+
+      <div class="two-col">
+        <label>
+          Дата
+          <input id="eventDate" type="date" required />
+        </label>
+        <label>
+          Начало события
+          <input id="eventTime" type="time" required />
+        </label>
+      </div>
+
+      <div class="two-col">
+        <label>
+          Подъём во сколько
+          <input id="wakeTime" type="time" required />
+        </label>
+        <label>
+          Повтор
+          <select id="repeatRule">
+            <option value="none">не повторять</option>
+            <option value="daily">каждый день</option>
+            <option value="weekly">каждую неделю</option>
+          </select>
+        </label>
+      </div>
+
+      <label>
+        Комментарий от Риты
+        <textarea id="eventNote" rows="3" placeholder="Например: не отключай звонок, я правда стараюсь тебя разбудить ♡"></textarea>
+      </label>
+
+      <div class="dialog-actions">
+        <button type="button" class="danger" id="deleteEventBtn">Удалить</button>
+        <button class="primary" value="save">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="settingsDialog">
+    <form method="dialog" class="dialog-card" id="settingsForm">
+      <div class="dialog-head">
+        <h2>Настройки</h2>
+        <button class="icon-button" type="button" id="closeSettings">×</button>
+      </div>
+
+      <label>
+        Телефон Риты для кнопки звонка
+        <input id="ritaPhone" placeholder="+79990000000" />
+      </label>
+
+      <label>
+        Ссылка для сообщения
+        <input id="ritaChat" placeholder="https://t.me/username или sms:+79990000000" />
+      </label>
+
+      <label>
+        Свои фразы через новую строку
+        <textarea id="ritaPhrases" rows="7"></textarea>
+      </label>
+
+      <div class="import-export">
+        <button type="button" class="secondary" id="exportBtn">Экспорт</button>
+        <label class="secondary file-label">
+          Импорт
+          <input type="file" id="importFile" accept="application/json" />
+        </label>
+      </div>
+
+      <button class="primary" value="save">Сохранить</button>
+      <p class="hint">Важно: это веб-приложение не заменяет настоящий будильник. Оно помогает с расписанием и утренним ритуалом, а будильник/звонок лучше оставить в телефоне.</p>
+    </form>
+  </dialog>
+
+  <template id="eventTemplate">
+    <article class="event-item">
+      <div class="event-time-block">
+        <strong class="wake-time"></strong>
+        <span class="event-time"></span>
+      </div>
+      <div class="event-copy">
+        <h3></h3>
+        <p></p>
+      </div>
+      <button class="tiny edit-event">изменить</button>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
